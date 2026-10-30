@@ -1,0 +1,3 @@
+# Core runs on standard Python 3.8+ without mandatory external dependencies.
+# Optional for enhanced terminal colors and reporting:
+colorama>=0.4.6

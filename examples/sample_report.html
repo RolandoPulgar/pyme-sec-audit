@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe Ejecutivo de Ciberseguridad PyME | DESKTOP-JI5H9LT</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 32px 16px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .header h1 { font-size: 20px; font-weight: 800; color: var(--primary); }
+        .header p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .meta-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .meta-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+        .meta-card .value { font-size: 14px; font-weight: 600; color: var(--primary); margin-top: 4px; word-break: break-all; }
+        
+        .score-hero {
+            background: #fef2f2;
+            border: 1px solid #ef444440;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .score-box { display: flex; align-items: baseline; gap: 8px; }
+        .score-number { font-size: 54px; font-weight: 900; color: #ef4444; line-height: 1; }
+        .score-denom { font-size: 20px; font-weight: 700; color: var(--text-muted); }
+        .score-grade { font-size: 18px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+        
+        .summary-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-pill {
+            background: var(--card-bg);
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin: 28px 0 16px 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .finding-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .ref-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .finding-id { font-size: 11px; font-family: monospace; color: var(--text-muted); }
+        .finding-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+        .finding-desc { font-size: 13px; color: var(--text); margin-bottom: 8px; }
+        .finding-impact {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: #334155;
+        }
+        .finding-remediation {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #1e3a8a;
+        }
+        .code-box {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 6px;
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .finding-details {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-family: monospace;
+        }
+
+        .passed-grid {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .passed-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12px;
+        }
+        .check-icon {
+            background: #dcfce7;
+            color: #15803d;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <h1>Informe Ejecutivo de Ciberseguridad PyME</h1>
+                <p>Auditoría de Postura y Línea Base de Cumplimiento (CIS Controls &bull; ISO 27001)</p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 12px; font-weight: 700; color: var(--primary);">Herramienta PyME-Sec-Audit</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Auditor: Rolando Pulgar</div>
+            </div>
+        </div>
+
+        <!-- Meta Grid -->
+        <div class="meta-grid">
+            <div class="meta-card">
+                <div class="label">Dispositivo Auditado</div>
+                <div class="value">DESKTOP-JI5H9LT</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">Dirección IP</div>
+                <div class="value">100.81.40.103</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">Sistema Operativo</div>
+                <div class="value">Windows 11 (Build 10.0.26300)</div>
+            </div>
+            <div class="meta-card">
+                <div class="label">Fecha y Hora de Auditoría</div>
+                <div class="value">2026-10-30 17:45:24</div>
+            </div>
+        </div>
+
+        <!-- Score Hero -->
+        <div class="score-hero">
+            <div>
+                <div class="score-box">
+                    <span class="score-number">47</span>
+                    <span class="score-denom">/ 100</span>
+                </div>
+                <div class="score-grade">Nivel de Seguridad: D (Deficiente - Riesgo Alto)</div>
+            </div>
+            <div class="summary-stats">
+                <div class="stat-pill" style="border-color: #fecaca; color: #991b1b;">
+                    Críticos: <strong>0</strong>
+                </div>
+                <div class="stat-pill" style="border-color: #fed7aa; color: #9a3412;">
+                    Altos: <strong>3</strong>
+                </div>
+                <div class="stat-pill" style="border-color: #fde68a; color: #92400e;">
+                    Medios: <strong>1</strong>
+                </div>
+                <div class="stat-pill" style="border-color: #bbf7d0; color: #166534;">
+                    Aprobados: <strong>6</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Vulnerabilities & Remediation -->
+        <div class="section-title">
+            <span>Hallazgos de Seguridad y Plan de Acción Priorizado (4)</span>
+        </div>
+        
+        <div class="finding-card" style="border-left: 4px solid #ef4444;">
+            <div class="finding-header">
+                <div style="display:flex; align-items:center; gap: 8px;">
+                    <span class="badge" style="background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a;">MEDIUM</span>
+                    <span class="ref-badge">CIS v8 3.11 / ISO 27001 A.10.1.1</span>
+                </div>
+                <span class="finding-id">SEC-END-003</span>
+            </div>
+            <h3 class="finding-title">Unidad del Sistema sin Cifrado de Disco (BitLocker)</h3>
+            <p class="finding-desc"><strong>Diagnóstico:</strong> La unidad principal no tiene el cifrado BitLocker activo.</p>
+            <div class="finding-impact">
+                <strong>Impacto de Riesgo para la Empresa:</strong> Cualquier persona con acceso físico al equipo puede extraer el disco y leer archivos sin contraseña de Windows.
+            </div>
+            <div class="finding-remediation">
+                <strong>Plan de Remediación Recomendado:</strong>
+                <pre class="code-box">Habilitar BitLocker en la unidad C: mediante Manage-Bde o Panel de Control.</pre>
+            </div>
+            <div class="finding-details"><strong>Detalle técnico:</strong> BitLocker inactivo en unidad C:.</div>
+        </div>
+        
+        <div class="finding-card" style="border-left: 4px solid #ef4444;">
+            <div class="finding-header">
+                <div style="display:flex; align-items:center; gap: 8px;">
+                    <span class="badge" style="background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa;">HIGH</span>
+                    <span class="ref-badge">CIS v8 5.1 / ISO 27001 A.9.2.1</span>
+                </div>
+                <span class="finding-id">SEC-IDN-001</span>
+            </div>
+            <h3 class="finding-title">Cuenta de Invitado (Guest) Habilitada</h3>
+            <p class="finding-desc"><strong>Diagnóstico:</strong> La cuenta de invitado integrada del sistema operativo está activa.</p>
+            <div class="finding-impact">
+                <strong>Impacto de Riesgo para la Empresa:</strong> Permite acceso anónimo no auditado a recursos y carpetas compartidas de la empresa.
+            </div>
+            <div class="finding-remediation">
+                <strong>Plan de Remediación Recomendado:</strong>
+                <pre class="code-box">Deshabilitar la cuenta de invitado: Disable-LocalUser -Name 'Guest' o 'Invitado'.</pre>
+            </div>
+            <div class="finding-details"><strong>Detalle técnico:</strong> Cuenta Guest/Invitado se encuentra habilitada.</div>
+        </div>
+        
+        <div class="finding-card" style="border-left: 4px solid #ef4444;">
+            <div class="finding-header">
+                <div style="display:flex; align-items:center; gap: 8px;">
+                    <span class="badge" style="background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa;">HIGH</span>
+                    <span class="ref-badge">CIS v8 4.1 / ISO 27001 A.13.1.2</span>
+                </div>
+                <span class="finding-id">SEC-NET-445</span>
+            </div>
+            <h3 class="finding-title">Puerto de Red Inseguro Escuchando: SMB (Direct-TCP) (Puerto 445)</h3>
+            <p class="finding-desc"><strong>Diagnóstico:</strong> El servicio SMB (Direct-TCP) está escuchando activamente en el puerto 445.</p>
+            <div class="finding-impact">
+                <strong>Impacto de Riesgo para la Empresa:</strong> Vector principal de propagación de ransomware y explotación (ej: EternalBlue).
+            </div>
+            <div class="finding-remediation">
+                <strong>Plan de Remediación Recomendado:</strong>
+                <pre class="code-box">Si el servicio no es estrictamente necesario, deshabilitarlo o bloquear el puerto 445 en el Firewall.</pre>
+            </div>
+            <div class="finding-details"><strong>Detalle técnico:</strong> Conexión TCP exitosa a 127.0.0.1:445</div>
+        </div>
+        
+        <div class="finding-card" style="border-left: 4px solid #ef4444;">
+            <div class="finding-header">
+                <div style="display:flex; align-items:center; gap: 8px;">
+                    <span class="badge" style="background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa;">HIGH</span>
+                    <span class="ref-badge">CIS v8 4.8 / MITRE ATT&CK T1557.001</span>
+                </div>
+                <span class="finding-id">SEC-NET-006</span>
+            </div>
+            <h3 class="finding-title">Protocolo LLMNR Habilitado (Riesgo de Captura de Credenciales)</h3>
+            <p class="finding-desc"><strong>Diagnóstico:</strong> El protocolo LLMNR se encuentra activo por defecto.</p>
+            <div class="finding-impact">
+                <strong>Impacto de Riesgo para la Empresa:</strong> Un atacante conectado a la red Wi-Fi o cableada de la empresa puede usar herramientas como Responder para suplantar servicios y capturar contraseñas en hash NTLM.
+            </div>
+            <div class="finding-remediation">
+                <strong>Plan de Remediación Recomendado:</strong>
+                <pre class="code-box">Deshabilitar LLMNR mediante GPO o clave de registro: New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' -Name 'EnableMulticast' -Value 0 -PropertyType DWord -Force</pre>
+            </div>
+            <div class="finding-details"><strong>Detalle técnico:</strong> LLMNR activo (EnableMulticast != 0)</div>
+        </div>
+        
+
+        <!-- Section: Passed Controls -->
+        <div class="section-title">
+            <span>Controles y Buenas Prácticas Verificadas (6)</span>
+        </div>
+        <div class="passed-grid">
+            
+        <div class="passed-item">
+            <span class="check-icon">✓</span>
+            <div>
+                <strong>Protección Antivirus en Tiempo Real</strong>
+                <div style="font-size: 11px; color: #64748b;">CIS v8 10.1 / ISO 27001 A.12.2.1 &bull; La protección antivirus en tiempo real está habilitada y activa.</div>
+            </div>
+        </div>
+        
+        <div class="passed-item">
+            <span class="check-icon">✓</span>
+            <div>
+                <strong>Firewall de Windows Activo en Todos los Perfiles</strong>
+                <div style="font-size: 11px; color: #64748b;">CIS v8 4.4 / ISO 27001 A.13.1.1 &bull; Los perfiles de firewall Dominio, Privado y Público están correctamente habilitados.</div>
+            </div>
+        </div>
+        
+        <div class="passed-item">
+            <span class="check-icon">✓</span>
+            <div>
+                <strong>Control de Cuentas de Usuario (UAC) Habilitado</strong>
+                <div style="font-size: 11px; color: #64748b;">CIS v8 5.4 / ISO 27001 A.9.4.1 &bull; UAC está activado para impedir que software no autorizado realice cambios en el sistema.</div>
+            </div>
+        </div>
+        
+        <div class="passed-item">
+            <span class="check-icon">✓</span>
+            <div>
+                <strong>Cantidad Controlada de Administradores Locales</strong>
+                <div style="font-size: 11px; color: #64748b;">CIS v8 5.4 / ISO 27001 A.9.2.3 &bull; Se identificaron 2 cuentas administradoras en el equipo.</div>
+            </div>
+        </div>
+        
+        <div class="passed-item">
+            <span class="check-icon">✓</span>
+            <div>
+                <strong>Política de Ejecución de PowerShell Restringida</strong>
+                <div style="font-size: 11px; color: #64748b;">CIS v8 2.2 / MITRE ATT&CK T1059.001 &bull; La política de ejecución está configurada en 'RemoteSigned'.</div>
+            </div>
+        </div>
+        
+        <div class="passed-item">
+            <span class="check-icon">✓</span>
+            <div>
+                <strong>Servicio de Registro de Eventos (EventLog) Activo</strong>
+                <div style="font-size: 11px; color: #64748b;">CIS v8 8.2 / ISO 27001 A.12.4.1 &bull; El servicio central de auditoría y logs de Windows se encuentra en ejecución.</div>
+            </div>
+        </div>
+        
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Generado automáticamente con <strong>PyME-Sec-Audit</strong> &bull; Framework de ciberseguridad para pequeñas y medianas empresas.
+        </div>
+    </div>
+</body>
+</html>
